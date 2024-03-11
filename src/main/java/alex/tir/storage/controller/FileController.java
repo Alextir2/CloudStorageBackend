@@ -27,7 +27,7 @@ public class FileController {
     private final FileService service;
 
     @PostMapping(
-            path = "/api/files",
+            path = "/",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)

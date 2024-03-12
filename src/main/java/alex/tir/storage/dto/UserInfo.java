@@ -13,8 +13,8 @@ public class UserInfo {
     private String email;
     private String firstName;
     private String lastName;
-    private Instant dateRegistered; // Было dateRegistered
-    private Instant dateModified; // Добавлено
+    private Instant dateRegistered;
+    private Instant dateModified;
     private Set<String> roles = new HashSet<>();
 
 }

@@ -52,7 +52,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public JwtAuthenticationResponse singIn(LoginForm loginForm){
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginForm.getEmail(),
                 loginForm.getPassword()));
-        var user = userRepository.findByEmail(loginForm.getEmail()).orElseThrow(()-> new IllegalArgumentException("Invalid email or password"));
+        var user = userRepository.findUserByEmailIgnoreCase(loginForm.getEmail()).orElseThrow(()-> new IllegalArgumentException("Invalid email or password"));
         var jwt = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(new HashMap<>(),user);
 
@@ -65,7 +65,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest){
         String email = jwtService.extractUserName(refreshTokenRequest.getToken());
-        User user = userRepository.findByEmail(email).orElseThrow();
+        User user = userRepository.findUserByEmailIgnoreCase(email).orElseThrow();
         if (jwtService.isTokenValid(refreshTokenRequest.getToken(),user)){
             var jwt = jwtService.generateToken(user);
             JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();

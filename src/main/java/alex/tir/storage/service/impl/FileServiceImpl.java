@@ -14,6 +14,7 @@ import alex.tir.storage.repo.FileRepository;
 import alex.tir.storage.repo.FolderRepository;
 import alex.tir.storage.service.FileService;
 import alex.tir.storage.utils.FileUtils;
+import alex.tir.storage.utils.JWTUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.FileSystemResource;
@@ -24,7 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
-import java.util.List;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @Service
@@ -70,6 +72,25 @@ public class FileServiceImpl implements FileService {
                 return file.getName();
             }
         };
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Metadata getFileMetadata(Long fileId) {
+        File file = getFile(fileId);
+        return metadataMapper.mapFile(file);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String generateToken(Long fileId) {
+        if (fileRepository.existsById(fileId)) {
+            Instant expiration = Instant.now().plus(properties.getFileTokenValidity(), ChronoUnit.SECONDS);
+            String secret = properties.getFileTokenSecret();
+            return JWTUtils.generateToken(fileId.toString(), expiration, secret);
+        } else {
+            throw new RecordNotFoundException(File.class, fileId);
+        }
     }
 
     private static String generateLocation() {

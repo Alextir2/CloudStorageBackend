@@ -4,8 +4,6 @@ import alex.tir.storage.dto.Metadata;
 import alex.tir.storage.dto.MetadataForm;
 import alex.tir.storage.service.FileService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -13,12 +11,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Map;
 
 @Tag(name = "Файлы")
 @RestController
@@ -55,6 +53,21 @@ public class FileController {
         return getFileResponseEntity(fileResource);
     }
 
+    @GetMapping(path = "/{fileId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Получение информации о файле")
+    public Metadata getFileMetadata(@PathVariable("fileId") Long fileId) {
+        return service.getFileMetadata(fileId);
+    }
+
+    @GetMapping(path = "/{fileId}/link", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Создание ссылки на файл")
+    public Map<String, String> getFileLink(
+            @PathVariable("fileId") Long fileId,
+            UriComponentsBuilder uriComponentsBuilder) {
+        String accessToken = service.generateToken(fileId);
+        String uriString = uriComponentsBuilder.path("/tl/{token}").buildAndExpand(accessToken).toUriString();
+        return Map.of("link", uriString);
+    }
     private ResponseEntity<Resource> getFileResponseEntity(Resource fileResource) {
         return ResponseEntity
                 .ok()

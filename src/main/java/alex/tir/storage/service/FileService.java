@@ -8,4 +8,8 @@ public interface FileService {
     Metadata saveFile(MetadataForm metadataForm, Resource resource);
 
     Resource getFileContents(Long fileId);
+
+    Metadata getFileMetadata(Long fileId);
+
+    String generateToken(Long fileId);
 }

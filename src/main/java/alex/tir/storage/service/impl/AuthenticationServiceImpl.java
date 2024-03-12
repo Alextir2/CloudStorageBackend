@@ -8,6 +8,7 @@ import alex.tir.storage.repo.RoleRepository;
 import alex.tir.storage.repo.UserRepository;
 import alex.tir.storage.service.AuthenticationService;
 import alex.tir.storage.service.JWTService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,6 +30,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JWTService jwtService;
 
     @Override
+    @Transactional
     public UserInfo signUp(UserForm userForm){
         User user = new User();
         user.setEmail(userForm.getEmail());

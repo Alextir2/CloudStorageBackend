@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,15 +28,18 @@ public class FileController {
     private final FileService service;
 
     @PostMapping(
-            path = "/",
+            path = "/{parentId}",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Загрузка файла")
     public ResponseEntity<Metadata> uploadFile(
-                MetadataForm metadataForm,
+                @PathVariable("parentId") Long parentId,
                 @RequestParam("file") MultipartFile file,
                 UriComponentsBuilder uriComponentsBuilder) {
+        MetadataForm metadataForm = new MetadataForm();
+        metadataForm.setName(file.getOriginalFilename());
+        metadataForm.setParentId(parentId);
         Metadata fileMetadata = service.saveFile(metadataForm, file.getResource());
         URI locationUri = uriComponentsBuilder
                 .path("/api/files/{fileId}")
@@ -44,5 +48,17 @@ public class FileController {
         return ResponseEntity.created(locationUri).body(fileMetadata);
     }
 
+    @GetMapping(path = "/{fileId}/contents", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @Operation(summary = "Скачать файл")
+    public ResponseEntity<Resource> downloadFile(@PathVariable("fileId") Long fileId) {
+        Resource fileResource = service.getFileContents(fileId);
+        return getFileResponseEntity(fileResource);
+    }
 
+    private ResponseEntity<Resource> getFileResponseEntity(Resource fileResource) {
+        return ResponseEntity
+                .ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileResource.getFilename() + "\"")
+                .body(fileResource);
+    }
 }

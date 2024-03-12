@@ -6,4 +6,6 @@ import org.springframework.core.io.Resource;
 
 public interface FileService {
     Metadata saveFile(MetadataForm metadataForm, Resource resource);
+
+    Resource getFileContents(Long fileId);
 }

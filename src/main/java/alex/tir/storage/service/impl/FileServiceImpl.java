@@ -16,6 +16,7 @@ import alex.tir.storage.service.FileService;
 import alex.tir.storage.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -59,6 +60,18 @@ public class FileServiceImpl implements FileService {
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public FileSystemResource getFileContents(Long fileId) {
+        File file = getFile(fileId);
+        return new FileSystemResource(properties.getBaseFolder() + file.getLocation()) {
+            @Override
+            public String getFilename() {
+                return file.getName();
+            }
+        };
+    }
+
     private static String generateLocation() {
         String uuidFileName = UUID.randomUUID().toString().replace("-", "");
         String separator = FileSystems.getDefault().getSeparator();
@@ -84,5 +97,11 @@ public class FileServiceImpl implements FileService {
         if (usedSpace + newFileSize > baseLimit) {
             throw new StorageLimitExceededException("Maximum storage limit " + baseLimit + " is exceeded");
         }
+    }
+
+    private File getFile(Long fileId) {
+        return fileRepository
+                .findById(fileId)
+                .orElseThrow(() -> new RecordNotFoundException(File.class, fileId));
     }
 }

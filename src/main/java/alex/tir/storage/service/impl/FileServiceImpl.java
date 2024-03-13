@@ -6,6 +6,7 @@ import alex.tir.storage.dto.MetadataForm;
 import alex.tir.storage.entity.File;
 import alex.tir.storage.entity.Folder;
 import alex.tir.storage.entity.User;
+import alex.tir.storage.exception.ExpiredFileTokenException;
 import alex.tir.storage.exception.FileException;
 import alex.tir.storage.exception.RecordNotFoundException;
 import alex.tir.storage.exception.StorageLimitExceededException;
@@ -15,6 +16,8 @@ import alex.tir.storage.repo.FolderRepository;
 import alex.tir.storage.service.FileService;
 import alex.tir.storage.utils.FileUtils;
 import alex.tir.storage.utils.JWTUtils;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.FileSystemResource;
@@ -27,6 +30,7 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -90,6 +94,45 @@ public class FileServiceImpl implements FileService {
             return JWTUtils.generateToken(fileId.toString(), expiration, secret);
         } else {
             throw new RecordNotFoundException(File.class, fileId);
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public FileSystemResource getFileContents(String fileAccessToken) {
+        try {
+            String subject = JWTUtils.verifyToken(fileAccessToken, properties.getFileTokenSecret());
+            return getFileContents(Long.valueOf(subject));
+        } catch (TokenExpiredException exception) {
+            throw new ExpiredFileTokenException();
+        } catch (JWTVerificationException exception) {
+            throw new RecordNotFoundException(File.class);
+        }
+    }
+
+    @Override
+    @Transactional
+    public Metadata updateFileMetadata(Long fileId, MetadataForm metadataForm) {
+        File file = getFile(fileId);
+        if (metadataForm.getParentId() != null) {
+            Folder newParentFolder = getParent(metadataForm.getParentId());
+            file.setParent(newParentFolder);
+        }
+        if (metadataForm.getName() != null) {
+            file.setName(metadataForm.getName());
+        }
+        return metadataMapper.mapFile(file);
+    }
+
+    @Override
+    @Transactional
+    public void deleteFile(Long fileId, boolean permanent) {
+        File file = getFile(fileId);
+        if (permanent) {
+            fileRepository.delete(file);
+        } else if (file.getParent() != null) {
+            file.getParent().getFiles().remove(file);
+            file.setParent(null);
         }
     }
 

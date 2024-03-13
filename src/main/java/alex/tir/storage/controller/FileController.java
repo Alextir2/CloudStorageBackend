@@ -68,6 +68,33 @@ public class FileController {
         String uriString = uriComponentsBuilder.path("/tl/{token}").buildAndExpand(accessToken).toUriString();
         return Map.of("link", uriString);
     }
+
+    @Operation(summary = "Скачивание файла по ссылке (токену)")
+    @GetMapping(path = "/{token}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<Resource> downloadFileByLink(@PathVariable("token") String token) {
+        Resource fileResource = service.getFileContents(token);
+        return getFileResponseEntity(fileResource);
+    }
+
+    @PatchMapping(
+            path = "/{fileId}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Обновление информации о файле")
+    public Metadata updateFileMetadata(
+            @PathVariable("fileId") Long fileId,
+            @RequestBody MetadataForm metadataForm) {
+        return service.updateFileMetadata(fileId, metadataForm);
+    }
+
+    @DeleteMapping("/{fileId}")
+    @Operation(summary = "Удаление файла")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteFile(
+            @PathVariable("fileId") Long fileId,
+            @RequestParam(name = "permanent", required = false, defaultValue = "false") boolean permanent) {
+        service.deleteFile(fileId, permanent);
+    }
     private ResponseEntity<Resource> getFileResponseEntity(Resource fileResource) {
         return ResponseEntity
                 .ok()

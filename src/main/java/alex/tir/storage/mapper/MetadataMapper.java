@@ -20,4 +20,10 @@ public interface MetadataMapper {
     Metadata mapFile(File file);
 
     List<Metadata> mapFiles(Iterable<File> files);
+
+    default List<Metadata> mapItems(Iterable<Folder> folders, Iterable<File> files) {
+        return Stream
+                .concat(mapFolders(folders).stream(), mapFiles(files).stream())
+                .collect(Collectors.toList());
+    }
 }

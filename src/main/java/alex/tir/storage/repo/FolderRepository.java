@@ -22,4 +22,9 @@ public interface FolderRepository extends JpaRepository<Folder, Long> {
                     "SELECT * FROM tree;",
             nativeQuery = true)
     List<Folder> deepFindAllSubfoldersByParentIdIn(@Param("parentsIdSet") Set<Long> parentIdSet);
+
+    @Query("SELECT f FROM Folder f WHERE f.owner.id = :ownerId AND f.parent IS NULL AND f.root = FALSE")
+    List<Folder> findDisconnectedFoldersByOwnerId(@Param("ownerId") Long ownerId);
+
+
 }

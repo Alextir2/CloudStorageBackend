@@ -22,4 +22,7 @@ public interface FileRepository extends JpaRepository<File, Long> {
                     "SELECT id FROM tree);",
             nativeQuery = true)
     List<File> deepFindAllFilesByParentIdIn(@Param("parentsIdSet") Set<Long> parentIdSet);
+
+    @Query("SELECT f FROM File f WHERE f.owner.id = :ownerId AND f.parent IS NULL")
+    List<File> findDisconnectedFilesByOwnerId(@Param("ownerId") Long ownerId);
 }

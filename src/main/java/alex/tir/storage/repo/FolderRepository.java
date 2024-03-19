@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -27,4 +28,5 @@ public interface FolderRepository extends JpaRepository<Folder, Long> {
     List<Folder> findDisconnectedFoldersByOwnerId(@Param("ownerId") Long ownerId);
 
 
+    List<Folder> findFoldersByDateModifiedAfterAndOwnerId(Instant afterDate, Long ownerId);
 }

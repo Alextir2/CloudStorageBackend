@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 
@@ -25,4 +26,6 @@ public interface FileRepository extends JpaRepository<File, Long> {
 
     @Query("SELECT f FROM File f WHERE f.owner.id = :ownerId AND f.parent IS NULL")
     List<File> findDisconnectedFilesByOwnerId(@Param("ownerId") Long ownerId);
+
+    List<File> findFilesByDateModifiedAfterAndOwnerId(Instant afterDate, Long ownerId);
 }

@@ -35,7 +35,7 @@ public class UserMapperImpl implements UserMapper {
         }
         Set<String> set1 = new HashSet<>(Math.max((int)(set.size()/.75f) + 1, 16));
         for (Role role : set) {
-            set1.add(role.toString());
+            set1.add(roleToString(role));
         }
         return set1;
     }

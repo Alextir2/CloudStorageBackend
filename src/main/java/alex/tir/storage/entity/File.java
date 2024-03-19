@@ -38,7 +38,4 @@ public class File extends AuditableEntity {
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
-    @OneToMany(mappedBy = "file", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Property> properties = new HashSet<>();
-
 }

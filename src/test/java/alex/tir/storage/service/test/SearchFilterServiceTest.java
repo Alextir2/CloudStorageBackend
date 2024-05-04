@@ -10,6 +10,7 @@ import alex.tir.storage.mapper.SearchMapper;
 import alex.tir.storage.repo.FileRepository;
 import alex.tir.storage.repo.FolderRepository;
 import alex.tir.storage.repo.UserRepository;
+import alex.tir.storage.service.impl.SearchFilterServiceImpl;
 import alex.tir.storage.util.FormBuilders;
 import alex.tir.storage.util.ProjectionBuilders;
 import org.junit.Test;

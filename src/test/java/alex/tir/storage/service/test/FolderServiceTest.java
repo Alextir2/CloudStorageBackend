@@ -9,6 +9,7 @@ import alex.tir.storage.exception.RecordNotFoundException;
 import alex.tir.storage.mapper.MetadataMapper;
 import alex.tir.storage.repo.FileRepository;
 import alex.tir.storage.repo.FolderRepository;
+import alex.tir.storage.service.impl.FolderServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -24,8 +25,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import static alex.tir.storage.util.EntityBuilders.*;
-import static alex.tir.storage.util.FormBuilders.defaultMetadataForm;
-import static alex.tir.storage.util.ProjectionBuilders.defaultMetadata;
+import static alex.tir.storage.util.FormBuilders.*;
+import static alex.tir.storage.util.ProjectionBuilders.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;

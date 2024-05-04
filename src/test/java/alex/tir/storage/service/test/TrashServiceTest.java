@@ -8,6 +8,7 @@ import alex.tir.storage.mapper.MetadataMapper;
 import alex.tir.storage.repo.FileRepository;
 import alex.tir.storage.repo.FolderRepository;
 import alex.tir.storage.repo.UserRepository;
+import alex.tir.storage.service.impl.TrashServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -16,9 +17,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 
-import static alex.tir.storage.util.EntityBuilders.defaultFile;
-import static alex.tir.storage.util.EntityBuilders.defaultFolder;
-import static alex.tir.storage.util.ProjectionBuilders.defaultMetadata;
+import static alex.tir.storage.util.EntityBuilders.*;
+import static alex.tir.storage.util.EntityBuilders.*;
+import static alex.tir.storage.util.ProjectionBuilders.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;

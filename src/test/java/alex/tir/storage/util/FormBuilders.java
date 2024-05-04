@@ -1,4 +1,4 @@
-package alex.tir.storage.utils;
+package alex.tir.storage.util;
 
 import alex.tir.storage.dto.MetadataForm;
 import alex.tir.storage.dto.SearchDTO;
@@ -26,10 +26,10 @@ public final class FormBuilders {
     }
 
     public static class UserFormBuilder {
-        private String firstName = "Fred";
-        private String lastName = "Bloggs";
-        private String email = "fred.bloggs@example.com";
-        private String password = "fred.bloggs";
+        private String firstName = "Nick";
+        private String lastName = "Kosiuk";
+        private String email = "fidget@gmail.com";
+        private String password = "Nick0533!";
     }
 
     @Builder(builderMethodName = "defaultUserForm")
@@ -55,11 +55,6 @@ public final class FormBuilders {
         form.setMimeType(mimeType);
         form.setParentId(parentId);
         return form;
-    }
-
-    public static class PropertyFormBuilder {
-        private String key = "Key";
-        private String value = "Value";
     }
 }
 

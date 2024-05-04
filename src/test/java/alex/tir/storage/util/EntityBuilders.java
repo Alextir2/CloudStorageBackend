@@ -1,4 +1,4 @@
-package alex.tir.storage.utils;
+package alex.tir.storage.util;
 
 import alex.tir.storage.entity.File;
 import alex.tir.storage.entity.Folder;
@@ -71,19 +71,12 @@ public final class EntityBuilders {
         return file;
     }
 
-    public static class PropertyBuilder {
-        private Long id = 0L;
-        private String key = "Key";
-        private String value = "Value";
-        private File file = new File();
-    }
-
     public static class UserBuilder {
         private Long id = 0L;
-        private String email = "john.doe@example.com";
-        private String password = "john.doe";
-        private String firstName = "John";
-        private String lastName = "Doe";
+        private String email = "alextir2@mail.ru";
+        private String password = "Sania0533!";
+        private String firstName = "Alex";
+        private String lastName = "Kosiuk";
         private Set<File> files = new HashSet<>();
         private Set<Folder> folders = new HashSet<>();
         private Set<Role> roles = new HashSet<>();

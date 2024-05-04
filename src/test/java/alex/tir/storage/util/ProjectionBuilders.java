@@ -1,4 +1,4 @@
-package alex.tir.storage.utils;
+package alex.tir.storage.util;
 
 import alex.tir.storage.dto.Metadata;
 import alex.tir.storage.dto.UserInfo;
@@ -41,11 +41,6 @@ public final class ProjectionBuilders {
         metadata.setMimeType(mimeType);
         metadata.setRoot(root);
         return metadata;
-    }
-
-    public static class PropertyInfoBuilder {
-        private String key = "Key";
-        private String value = "Value";
     }
 
 
